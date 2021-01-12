@@ -1,0 +1,44 @@
+<!doctype html>
+<html>
+<head>
+    <title>AB legal</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" type="text/css">
+</head>
+
+<body>
+    <img class='pages' src= "{{url_for('static', filename=image_path)}}"  alt="page 0" >
+
+    <div class="result">
+        <pre>{{ response_json }}</pre>
+    </div>
+
+    <div class='user_inputs'>
+
+        {% set current = current_ix | int %}
+        {% set prev = current - 1 %}
+        {% if prev < 0 %}
+                {% set prev = 0 %}
+        {% endif %}
+        {% set nex = current + 1 %}
+        {% if nex > total_cases-1  %}
+                {% set nex = total_cases-1 %}
+        {% endif %}
+
+        <a href= "{{ url_for('display_case', ix= prev) }}" >Previous</a>
+
+        <form method="post" action= "{{ url_for('status', ix= current) }}" enctype="multipart/form-data">
+            <div class='status'>
+                <input type="radio" id="Correct" name="status" value="Correct">
+                <label for="Correct">Correct</label><br>
+                <input type="radio" id="Incorrect" name="status" value="Incorrect" checked>
+                <label for="Incorrect">Incorrect</label><br>
+                <input type="submit" value="Submit">
+            </div>
+        </form>
+
+        <a href= "{{ url_for('display_case', ix= nex) }}" >Next</a>
+
+    </div>
+
+</body>
+</html>

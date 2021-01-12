@@ -1,0 +1,40 @@
+
+body{
+    margin-bottom: 4rem;
+    display: flex;
+    width: 100%;
+    overflow-x: hidden;
+
+}
+
+.result{
+    width: 50%;
+    overflow-x: scroll ;
+    overflow-y: scroll;
+    height: 90vh;
+}
+
+.pages {
+    height: 90vh;
+    width: 50%;
+    overflow: hidden;
+    border-right: 2px solid rgb(37, 2, 2);
+}
+
+.user_inputs{
+    position: fixed;
+    bottom: 1px;
+    right: 1px;
+    left: 1px;
+    justify-content: space-between;
+    display: flex;
+    z-index: 3;
+    height: 50px;
+    background-color: rgb(240, 234, 226);
+
+}
+
+.status{
+    display: flex;
+    font-size: 16pt;
+}

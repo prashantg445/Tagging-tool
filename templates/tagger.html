@@ -26,11 +26,11 @@
 
         <a href= "{{ url_for('display_case', ix= prev) }}" >Previous</a>
 
-        <form method="post" action= "{{ url_for('status', ix= current) }}" enctype="multipart/form-data">
+        <form method="post" action= "{{ url_for('getStatus', ix= current) }}" enctype="multipart/form-data">
             <div class='status'>
-                <input type="radio" id="Correct" name="status" value="Correct">
+                <input type="radio" id="Correct" name="status" value="Correct" {{ 'checked' if status=='Correct' else '' }}>
                 <label for="Correct">Correct</label><br>
-                <input type="radio" id="Incorrect" name="status" value="Incorrect" checked>
+                <input type="radio" id="Incorrect" name="status" value="Incorrect" {{ 'checked' if status=='Incorrect' else '' }}  >
                 <label for="Incorrect">Incorrect</label><br>
                 <input type="submit" value="Submit">
             </div>

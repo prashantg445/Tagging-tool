@@ -3,10 +3,39 @@
 <head>
     <title>AB legal</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" type="text/css">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" >
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 </head>
 
 <body>
-    <img class='pages' src= "{{url_for('static', filename=image_path)}}"  alt="page 0" >
+    <!-- <img class='pages' src= "{{url_for('static', filename=pages)}}"  alt="page 0" > -->
+    <div class="pages">
+    <div class="row">
+        <div class="col-md-7 col-lg-7">
+
+            <div id="carouselExampleControls" class="carousel slide" data-interval="false">
+                <div class="carousel-inner">
+                    {% for page in pages %}
+                        <div class="carousel-item {% if loop.index == 1 %} active {% endif %}">
+                            <img class="d-block w-100" src="{{ url_for('static', filename=page) | safe }}" alt="{{ loop.index }} slide">
+                        </div>
+                    {% endfor %}
+                </div>
+                <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
+                  <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                  <span class="sr-only">Previous Page</span>
+                </a>
+                <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
+                  <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                  <span class="sr-only">Next Page</span>
+                </a>              
+            </div>
+        </div>
+    </div>
+    </div>
 
     <div class="result">
         <pre>{{ response_json }}</pre>
@@ -24,21 +53,51 @@
                 {% set nex = total_cases-1 %}
         {% endif %}
 
-        <a href= "{{ url_for('display_case', ix= prev) }}" >Previous</a>
+        <div class="col-md-2">
+            <a href= "{{ url_for('display_case', ix= prev) }}" >Previous</a>
+        </div>
 
-        <form method="post" action= "{{ url_for('getStatus', ix= current) }}" enctype="multipart/form-data">
+        <form method="post" action= "{{ url_for('setStatus', ix= current) }}" enctype="multipart/form-data">
             <div class='status'>
-                <input type="radio" id="Correct" name="status" value="Correct" {{ 'checked' if status=='Correct' else '' }}>
+                <pre>Yolo+OCR status: </pre>  
+                <input type="radio" id="Correct" name="yolo_ocr_status" value="Correct" {{ 'checked' if yolo_ocr_status=='Correct' else '' }}>
                 <label for="Correct">Correct</label><br>
-                <input type="radio" id="Incorrect" name="status" value="Incorrect" {{ 'checked' if status=='Incorrect' else '' }}  >
+                <input type="radio" id="Incorrect" name="yolo_ocr_status" value="Incorrect" {{ 'checked' if yolo_ocr_status=='Incorrect' else '' }}  >
+                <label for="Incorrect">Incorrect</label><br>
+
+                <pre>       NER status: </pre>  
+                <input type="radio" id="Correct" name="ner_status" value="Correct" {{ 'checked' if ner_status=='Correct' else '' }}>
+                <label for="Correct">Correct</label><br>
+                <input type="radio" id="Incorrect" name="ner_status" value="Incorrect" {{ 'checked' if ner_status=='Incorrect' else '' }}  >
                 <label for="Incorrect">Incorrect</label><br>
                 <input type="submit" value="Submit">
             </div>
+            
         </form>
 
-        <a href= "{{ url_for('display_case', ix= nex) }}" >Next</a>
+        <div class="col-md-2">
+            <a href= "{{ url_for('display_case', ix= nex) }}" >Next</a>
+        </div>
 
     </div>
+
+
+    <script>
+        $(document).ready(function(){  
+            var myCarousels = $(".carousel");
+            myCarousels.each(function( index, element  ) {
+                var myCarousel = $("#"+$(element).attr('id')); 
+                myCarousel.append("<ol class='carousel-indicators'></ol>");
+                var indicators = $("#"+$(element).attr('id') + " .carousel-indicators"); 
+                $("#"+$(element).attr('id') +" .carousel-inner").children(".item").each(function(index) {
+                    console.log(index);
+                    (index === 0) ? 
+                    indicators.append("<li data-target='#"+$(element).attr('id')+"' data-slide-to='"+index+"' class='active'></li>") : 
+                    indicators.append("<li data-target='#"+$(element).attr('id')+"' data-slide-to='"+index+"'></li>");
+                });
+            });
+        });
+    </script>
 
 </body>
 </html>

@@ -12,9 +12,9 @@ app = Flask(__name__)
 all_cases = sorted(glob.glob('static/detections/*'))
 output_path = 'output_'+ datetime.now().strftime("%Y-%m-%d_%H:%M")+'.csv'
 with open(output_path, 'w') as f:
-    f.write('filepath,status\n')
+    f.write('filepath,yolo_ocr_status,ner_status\n')
     for each in all_cases:
-        f.write(each+',Incorrect\n')
+        f.write(each+',Incorrect,Incorrect\n')
 
 output = pd.read_csv(output_path)
 
@@ -36,24 +36,26 @@ def display_case(ix):
     pages = glob.glob(os.path.join(case_folder, '*.jpeg'))
     # removing static from the image path
     pages = [page.split('static/')[1] for page in pages]
-    status = output.iloc[ix]['status']
-    print(status)
-    return render_template('tagger.html', image_path = pages[0], response_json = resp, current_ix=ix, status=status, total_cases = len(all_cases))
+    yolo_ocr_status = output.iloc[ix]['yolo_ocr_status']
+    ner_status = output.iloc[ix]['ner_status']
+    return render_template('tagger.html', pages = pages, response_json = resp, current_ix=ix, 
+                                yolo_ocr_status=yolo_ocr_status, ner_status=ner_status, total_cases = len(all_cases))
 
-@app.route('/getStatus/<ix>', methods=['POST'])
-def getStatus(ix):
+@app.route('/setStatus/<ix>', methods=['POST'])
+def setStatus(ix):
     global output
+    print(request.form)
     ix = int(ix)
-    output.iloc[ix]['status'] = request.form['status']
+    output.iloc[ix]['yolo_ocr_status'] = request.form['yolo_ocr_status']
+    output.iloc[ix]['ner_status'] = request.form['ner_status']
     output.to_csv(output_path, index=False)
     next_ix = min( ix+1, len(all_cases)-1)
-    print(request.form['status'], next_ix)
     return redirect( url_for('display_case',ix=str(next_ix)) )
 
 
 @app.route('/')
 def tool():
-    return display_case(0)
+    return redirect(url_for('display_case', ix=0))
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', debug=True)
